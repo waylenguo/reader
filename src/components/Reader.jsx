@@ -186,7 +186,9 @@ function Reader() {
     useEffect(() => {
         if (!viewerRef.current) return
 
-        const bookInstance = ePub(`/books/${bookId}`)
+        const bookUrl = localStorage.getItem('bookUrl')
+        const bookInstance = ePub(bookUrl)
+        // const bookInstance = ePub(`/books/${bookId}`)
         setBook(bookInstance)
 
         // 获取目录
