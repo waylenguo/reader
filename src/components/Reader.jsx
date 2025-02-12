@@ -187,7 +187,11 @@ function Reader() {
         if (!viewerRef.current) return
 
         const bookUrl = localStorage.getItem('bookUrl')
-        const bookInstance = ePub(bookUrl)
+        const bookInstance = ePub(bookUrl, {
+            requestHeaders: {
+                'Access-Control-Allow-Origin': '*'
+            }
+        })
         // const bookInstance = ePub(`/books/${bookId}`)
         setBook(bookInstance)
 
