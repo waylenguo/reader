@@ -1,0 +1,415 @@
+.reader {
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  position: relative;
+  /* background-color: #f5f5f5; */
+}
+
+.reader-layout {
+  padding-top: 60px;
+  height: 100vh;
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  width: 100%;
+}
+
+.reader-container {
+  flex: 1;
+  position: relative;
+  height: calc(100vh - 110px);
+  /* margin: 0 100px; */
+  /* max-width: calc(100vw - 200px); */
+  width: 100%;
+  padding-bottom: 30px;
+}
+
+/* 添加毛玻璃遮罩 */
+.resize-overlay {
+  display: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  z-index: 1000;
+  background-color: rgba(255, 255, 255, 0.1);
+  transition: backdrop-filter 0.3s ease;
+}
+
+.resize-overlay.active {
+  display: block;
+}
+
+.nav-button {
+  position: fixed;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 1;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.7);
+  border: none;
+  cursor: pointer;
+  font-size: 24px;
+  color: #333;
+  transition: background 0.3s;
+  height: 100px;
+  display: flex;
+  align-items: center;
+}
+
+.nav-button.prev {
+  left: 0;
+  border-radius: 0 5px 5px 0;
+}
+
+.nav-button.next {
+  right: 0;
+  border-radius: 5px 0 0 5px;
+}
+
+.nav-button:hover {
+  background: rgba(255, 255, 255, 0.9);
+}
+
+.page-info {
+  position: fixed;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.6);
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  color: #fff;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  z-index: 100;
+}
+
+.toolbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    padding: 10px 20px;
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    z-index: 1000;
+    /* border-bottom: 1px solid rgba(0, 0, 0, 0.1); */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.toolbar-left {
+    flex: 1;
+    display: flex;
+    justify-content: flex-start;
+    gap: 8px; /* 按钮之间的间距 */
+}
+
+.toolbar-title {
+    flex: 2;
+    text-align: center;
+    font-size: 16px;
+    font-weight: 500;
+    color: #333;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding: 0 20px;
+}
+
+.toolbar-right {
+    flex: 1;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.font-size-controls {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.font-size-value {
+    font-size: 14px;
+    color: #666;
+    min-width: 46px;
+    text-align: center;
+}
+
+/* 确保按钮大小一致 */
+.toolbar-button {
+    width: 36px;
+    height: 36px;
+    padding: 0; /* 移除内边距 */
+    /* border: 1px solid rgba(0, 0, 0, 0.08); /* 淡化按钮边框 */
+    border-radius: 6px; */
+    background: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;    /* 垂直居中 */
+    justify-content: center; /* 水平居中 */
+    transition: all 0.2s ease;
+}
+
+.toolbar-button .anticon {
+    display: flex;           /* 确保图标本身也是 flex 布局 */
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;        /* 统一图标大小 */
+}
+
+/* 字体大小按钮的特殊处理 */
+.toolbar-button .anticon-font-size {
+    line-height: 1;         /* 移除行高影响 */
+}
+
+.toolbar-button:hover {
+    background: rgba(0, 0, 0, 0.05);
+    color: #333;
+    border-color: rgba(0, 0, 0, 0.2);
+}
+
+.toolbar-button:active {
+    background: rgba(0, 0, 0, 0.1);
+}
+
+.toc-panel {
+    position: fixed;
+    left: 20px;
+    top: 70px;
+    width: 300px;
+    max-height: calc(100vh - 90px);
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    transform: translateX(-120%);
+    transition: transform 0.3s ease;
+    z-index: 1000;
+    padding: 20px;
+    overflow-y: auto;
+    scrollbar-width: thin; /* Firefox */
+    scrollbar-color: rgba(0, 0, 0, 0.2) transparent; /* Firefox */
+}
+
+.toc-panel.active {
+    transform: translateX(0);
+}
+
+.toc-item {
+    padding: 8px 12px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: 4px;
+}
+
+.toc-item:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+.toc-label {
+    flex: 1;
+    text-align: left;
+    margin-right: 10px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.toc-page {
+    color: #666;
+    font-size: 0.9em;
+    min-width: 30px;
+    text-align: right;
+}
+
+.toc-subitems {
+    margin-left: 20px;
+}
+
+/* Webkit浏览器的滚动条样式 */
+.toc-panel::-webkit-scrollbar {
+    width: 6px;
+}
+
+.toc-panel::-webkit-scrollbar-track {
+    background: transparent;
+    border-radius: 3px;
+}
+
+.toc-panel::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 3px;
+    transition: background-color 0.3s;
+}
+
+.toc-panel::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(0, 0, 0, 0.3);
+}
+
+.settings-panel {
+    position: fixed;
+    top: 60px;
+    right: 20px;
+    width: 280px;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    padding: 16px;
+    z-index: 1000;
+}
+
+.settings-group {
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.settings-group:last-child {
+    border-bottom: none;
+}
+
+.settings-group label {
+    display: block;
+    margin-bottom: 12px;
+    color: #666;
+    font-size: 14px;
+}
+
+.settings-controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.settings-controls button {
+    flex: 1;
+    padding: 8px;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    border-radius: 6px;
+    background: white;
+    color: #333;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.2s ease;
+}
+
+.settings-controls button:hover {
+    background: rgba(0, 0, 0, 0.02);
+}
+
+.settings-controls button.active {
+    background: #f0f0f0;
+    border-color: rgba(0, 0, 0, 0.15);
+    color: #1890ff;
+}
+
+.theme-buttons {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 4px 0;
+}
+
+.theme-button {
+    width: 40px;
+    height: 40px;
+    border-radius: 4px;
+    border: 2px solid transparent;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.theme-button.active {
+    border-color: #1890ff;
+    transform: scale(1.1);
+}
+
+.theme-button.white {
+    background: #ffffff;
+    border: 1px solid #ddd;
+}
+
+.theme-button.sepia {
+    background: #f4ecd8;
+}
+
+.theme-button.dark {
+    background: #333333;
+}
+
+input[type="range"] {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 4px;
+    background: #e0e0e0;
+    border-radius: 2px;
+    margin: 12px 0;
+    cursor: pointer;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 16px;
+    height: 16px;
+    background: white;
+    border: 2px solid #1890ff;
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-top: -6px; /* 调整滑块垂直位置 */
+}
+
+input[type="range"]::-webkit-slider-runnable-track {
+    width: 100%;
+    height: 4px;
+    border-radius: 2px;
+    background: #e0e0e0;
+    cursor: pointer;
+}
+
+/* Firefox 支持 */
+input[type="range"]::-moz-range-thumb {
+    width: 16px;
+    height: 16px;
+    background: white;
+    border: 2px solid #1890ff;
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+input[type="range"]::-moz-range-track {
+    width: 100%;
+    height: 4px;
+    background: #e0e0e0;
+    border-radius: 2px;
+    cursor: pointer;
+}
+
+/* 确保 epub 视图本身也是全宽的 */
+#viewer {
+    width: 100% !important;
+    height: 100% !important;
+}
+
+/* 确保 epub 内容区域铺满 */
+#viewer iframe {
+    width: 100% !important;
+    height: 100% !important;
+}
