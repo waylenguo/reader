@@ -20,7 +20,7 @@
   position: relative;
   height: calc(100vh - 110px);
   /* margin: 0 100px; */
-  /* max-width: calc(100vw - 200px); */
+  max-width: calc(100vw - 160px);
   width: 100%;
   padding-bottom: 30px;
 }
@@ -147,17 +147,80 @@
 
 /* 确保按钮大小一致 */
 .toolbar-button {
-    width: 36px;
-    height: 36px;
-    padding: 0; /* 移除内边距 */
-    /* border: 1px solid rgba(0, 0, 0, 0.08); /* 淡化按钮边框 */
-    border-radius: 6px; */
-    background: white;
+    background: none;
+    border: none;
+    padding: 8px;
     cursor: pointer;
+    color: inherit;
     display: flex;
-    align-items: center;    /* 垂直居中 */
-    justify-content: center; /* 水平居中 */
+    align-items: center;
+    gap: 4px;
     transition: all 0.2s ease;
+    border-radius: 6px;
+    position: relative;
+    overflow: hidden;
+    outline: none;
+}
+
+/* 毛玻璃效果背景 */
+.toolbar-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+/* 灯光扫过动画效果 */
+.toolbar-button::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(
+        to right,
+        transparent,
+        transparent,
+        rgba(255, 255, 255, 0.1),
+        rgba(255, 255, 255, 0.2),
+        rgba(255, 255, 255, 0.1),
+        transparent,
+        transparent
+    );
+    transform: rotate(45deg);
+    animation: lightSweep 2s infinite;
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+
+/* 确保图标和文字在效果上层 */
+.toolbar-button > * {
+    position: relative;
+    z-index: 1;
+}
+
+.toolbar-button:hover::before {
+    opacity: 1;
+}
+
+.toolbar-button:hover::after {
+    opacity: 1;
+}
+
+/* 移除默认的点击效果 */
+.toolbar-button:focus {
+    outline: none;
+    -webkit-tap-highlight-color: transparent;
 }
 
 .toolbar-button .anticon {
@@ -172,38 +235,32 @@
     line-height: 1;         /* 移除行高影响 */
 }
 
-.toolbar-button:hover {
-    background: rgba(0, 0, 0, 0.05);
-    color: #333;
-    border-color: rgba(0, 0, 0, 0.2);
-}
-
-.toolbar-button:active {
-    background: rgba(0, 0, 0, 0.1);
-}
-
 .toc-panel {
     position: fixed;
     left: 20px;
     top: 70px;
     width: 300px;
-    max-height: calc(100vh - 90px);
+    max-height: calc(100vh - 170px);
     background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     border-radius: 8px;
-    transform: translateX(-120%);
-    transition: transform 0.3s ease;
+    transform: translateX(-110%);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    opacity: 0;
+    visibility: hidden;
     z-index: 1000;
     padding: 20px;
     overflow-y: auto;
-    scrollbar-width: thin; /* Firefox */
-    scrollbar-color: rgba(0, 0, 0, 0.2) transparent; /* Firefox */
+    scrollbar-width: thin;
+    scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
 }
 
 .toc-panel.active {
     transform: translateX(0);
+    opacity: 1;
+    visibility: visible;
 }
 
 .toc-item {
@@ -226,7 +283,9 @@
     margin-right: 10px;
     overflow: hidden;
     text-overflow: ellipsis;
-    white-space: nowrap;
+    white-space: break-spaces;
+    font-size: 14px;
+    font-weight: 500;
 }
 
 .toc-page {
@@ -260,147 +319,6 @@
     background-color: rgba(0, 0, 0, 0.3);
 }
 
-.settings-panel {
-    position: fixed;
-    top: 60px;
-    right: 20px;
-    width: 280px;
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-    padding: 16px;
-    z-index: 1000;
-}
-
-.settings-group {
-    padding: 12px 0;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
-}
-
-.settings-group:last-child {
-    border-bottom: none;
-}
-
-.settings-group label {
-    display: block;
-    margin-bottom: 12px;
-    color: #666;
-    font-size: 14px;
-}
-
-.settings-controls {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 8px;
-}
-
-.settings-controls button {
-    flex: 1;
-    padding: 8px;
-    border: 1px solid rgba(0, 0, 0, 0.08);
-    border-radius: 6px;
-    background: white;
-    color: #333;
-    cursor: pointer;
-    font-size: 14px;
-    transition: all 0.2s ease;
-}
-
-.settings-controls button:hover {
-    background: rgba(0, 0, 0, 0.02);
-}
-
-.settings-controls button.active {
-    background: #f0f0f0;
-    border-color: rgba(0, 0, 0, 0.15);
-    color: #1890ff;
-}
-
-.theme-buttons {
-    display: flex;
-    justify-content: space-between;
-    gap: 12px;
-    padding: 4px 0;
-}
-
-.theme-button {
-    width: 40px;
-    height: 40px;
-    border-radius: 4px;
-    border: 2px solid transparent;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-.theme-button.active {
-    border-color: #1890ff;
-    transform: scale(1.1);
-}
-
-.theme-button.white {
-    background: #ffffff;
-    border: 1px solid #ddd;
-}
-
-.theme-button.sepia {
-    background: #f4ecd8;
-}
-
-.theme-button.dark {
-    background: #333333;
-}
-
-input[type="range"] {
-    -webkit-appearance: none;
-    width: 100%;
-    height: 4px;
-    background: #e0e0e0;
-    border-radius: 2px;
-    margin: 12px 0;
-    cursor: pointer;
-}
-
-input[type="range"]::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    width: 16px;
-    height: 16px;
-    background: white;
-    border: 2px solid #1890ff;
-    border-radius: 50%;
-    cursor: pointer;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    margin-top: -6px; /* 调整滑块垂直位置 */
-}
-
-input[type="range"]::-webkit-slider-runnable-track {
-    width: 100%;
-    height: 4px;
-    border-radius: 2px;
-    background: #e0e0e0;
-    cursor: pointer;
-}
-
-/* Firefox 支持 */
-input[type="range"]::-moz-range-thumb {
-    width: 16px;
-    height: 16px;
-    background: white;
-    border: 2px solid #1890ff;
-    border-radius: 50%;
-    cursor: pointer;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-input[type="range"]::-moz-range-track {
-    width: 100%;
-    height: 4px;
-    background: #e0e0e0;
-    border-radius: 2px;
-    cursor: pointer;
-}
 
 /* 确保 epub 视图本身也是全宽的 */
 #viewer {
@@ -412,4 +330,14 @@ input[type="range"]::-moz-range-track {
 #viewer iframe {
     width: 100% !important;
     height: 100% !important;
+}
+
+/* 灯光扫过动画关键帧 */
+@keyframes lightSweep {
+    0% {
+        transform: rotate(45deg) translateX(-100%);
+    }
+    100% {
+        transform: rotate(45deg) translateX(100%);
+    }
 }

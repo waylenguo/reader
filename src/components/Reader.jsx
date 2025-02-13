@@ -2,7 +2,9 @@ import { useState, useRef, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import ePub from 'epubjs'
 import './Reader.css'
-import { LeftOutlined, UnorderedListOutlined, FontSizeOutlined } from '@ant-design/icons'
+import { LeftOutlined, UnorderedListOutlined, FontSizeOutlined, CodeSandboxCircleFilled } from '@ant-design/icons'
+import { THEMES, DEFAULT_THEME } from '../config/themes'
+import ReaderSettings from './ReaderSettings'
 
 function Reader() {
     const { bookId } = useParams()
@@ -19,12 +21,9 @@ function Reader() {
     const [fontSize, setFontSize] = useState(100)
     const [showSettings, setShowSettings] = useState(false)
     const [brightness, setBrightness] = useState(100)
-    const [theme, setTheme] = useState('white')
+    const [theme, setTheme] = useState(DEFAULT_THEME)
     const [isDoublePage, setIsDoublePage] = useState(false)
-    const [currentTheme, setCurrentTheme] = useState({
-        backgroundColor: '#ffffff',
-        textColor: '#000000'
-    });
+    const [currentTheme, setCurrentTheme] = useState(THEMES[DEFAULT_THEME].colors)
 
     // 从 URL 路径中获取书名并去掉后缀
     const getBookNameFromPath = () => {
@@ -126,7 +125,7 @@ function Reader() {
             rendition.themes.default({
                 body: {
                     background: `${currentTheme.backgroundColor} !important`,
-                    color: `${currentTheme.textColor} !important`
+                    color: `${currentTheme.textColor} !important`,
                 }
             });
         }
@@ -134,37 +133,9 @@ function Reader() {
 
     // 切换背景色
     const handleThemeChange = (newTheme) => {
-        setTheme(newTheme);
-        let themeColors = {
-            backgroundColor: '#ffffff',
-            textColor: '#000000'
-        };
-
-        switch (newTheme) {
-            case 'sepia':
-                themeColors = {
-                    backgroundColor: '#f4ecd8',
-                    textColor: '#42321A'
-                };
-                break;
-            case 'dark':
-                themeColors = {
-                    backgroundColor: '#333333',
-                    textColor: '#dddddd'
-                };
-                break;
-        }
-
-        setCurrentTheme(themeColors);
-
-        // 立即应用到当前内容
-        if (rendition) {
-            rendition.getContents().forEach(contents => {
-                if (contents && contents.doc && contents.doc.body) {
-                    contents.doc.body.style.backgroundColor = themeColors.backgroundColor;
-                    contents.doc.body.style.color = themeColors.textColor;
-                }
-            });
+        if (THEMES[newTheme]) {
+            setTheme(newTheme)
+            setCurrentTheme(THEMES[newTheme].colors)
         }
     };
 
@@ -197,6 +168,7 @@ function Reader() {
 
         // 获取目录
         bookInstance.loaded.navigation.then(nav => {
+            console.log(nav)
             setToc(nav.toc)
         })
 
@@ -352,7 +324,7 @@ function Reader() {
                 <div className="reader-container">
                     <div
                         ref={viewerRef}
-                        style={{ width: '100%', height: '100%' }}
+                        style={{ width: '100%', height: '100%'  }}
                     ></div>
                     <div className={`resize-overlay ${isResizing ? 'active' : ''}`}></div>
                     <div className="page-info">
@@ -363,68 +335,16 @@ function Reader() {
             </div>
 
             {showSettings && (
-                <div className="settings-panel">
-                    <div className="settings-group">
-                        <label>字号</label>
-                        <div className="settings-controls">
-                            <button onClick={() => adjustFontSize(-10)}>缩小</button>
-                            <span>{fontSize}%</span>
-                            <button onClick={() => adjustFontSize(10)}>放大</button>
-                        </div>
-                    </div>
-
-                    <div className="settings-group">
-                        <label>亮度</label>
-                        <div className="settings-controls">
-                            <input 
-                                type="range" 
-                                min="20" 
-                                max="100"
-                                value={brightness}
-                                onChange={(e) => handleBrightnessChange(e.target.value)}
-                            />
-                        </div>
-                    </div>
-
-                    <div className="settings-group">
-                        <label>背景</label>
-                        <div className="theme-buttons">
-                            <button 
-                                className={`theme-button white ${theme === 'white' ? 'active' : ''}`}
-                                onClick={() => handleThemeChange('white')}
-                                title="白色主题"
-                            ></button>
-                            <button 
-                                className={`theme-button sepia ${theme === 'sepia' ? 'active' : ''}`}
-                                onClick={() => handleThemeChange('sepia')}
-                                title="护眼模式"
-                            ></button>
-                            <button 
-                                className={`theme-button dark ${theme === 'dark' ? 'active' : ''}`}
-                                onClick={() => handleThemeChange('dark')}
-                                title="夜间模式"
-                            ></button>
-                        </div>
-                    </div>
-
-                    <div className="settings-group">
-                        <label>页面模式</label>
-                        <div className="settings-controls">
-                            <button 
-                                className={!isDoublePage ? 'active' : ''}
-                                onClick={() => handlePageLayoutChange(false)}
-                            >
-                                单页
-                            </button>
-                            <button 
-                                className={isDoublePage ? 'active' : ''}
-                                onClick={() => handlePageLayoutChange(true)}
-                            >
-                                双页
-                            </button>
-                        </div>
-                    </div>
-                </div>
+                <ReaderSettings
+                    fontSize={fontSize}
+                    adjustFontSize={adjustFontSize}
+                    brightness={brightness}
+                    handleBrightnessChange={handleBrightnessChange}
+                    theme={theme}
+                    handleThemeChange={handleThemeChange}
+                    isDoublePage={isDoublePage}
+                    handlePageLayoutChange={handlePageLayoutChange}
+                />
             )}
         </div>
     )
