@@ -1,94 +1,124 @@
+:root {
+    --reader-bg-color: #ffffff;
+    --reader-text-color: #000000;
+}
+
 .reader {
-  width: 100vw;
-  height: 100vh;
-  overflow: hidden;
-  position: relative;
-  /* background-color: #f5f5f5; */
+    background-color: var(--reader-bg-color);
+    color: var(--reader-text-color);
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    position: relative;
+    /* background-color: #f5f5f5; */
 }
 
 .reader-layout {
-  padding-top: 60px;
-  height: 100vh;
-  display: flex;
-  align-items: stretch;
-  justify-content: center;
-  width: 100%;
+    padding-top: 60px;
+    height: 100vh;
+    display: flex;
+    align-items: stretch;
+    justify-content: center;
+    width: 100%;
 }
 
 .reader-container {
-  flex: 1;
-  position: relative;
-  height: calc(100vh - 110px);
-  /* margin: 0 100px; */
-  max-width: calc(100vw - 160px);
-  width: 100%;
-  padding-bottom: 30px;
+    flex: 1;
+    position: relative;
+    height: calc(100vh - 110px);
+    /* margin: 0 100px; */
+    max-width: calc(100vw - 160px);
+    width: 100%;
+    padding-bottom: 30px;
 }
 
 /* 添加毛玻璃遮罩 */
 .resize-overlay {
-  display: none;
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  backdrop-filter: blur(5px);
-  -webkit-backdrop-filter: blur(5px);
-  z-index: 1000;
-  background-color: rgba(255, 255, 255, 0.1);
-  transition: backdrop-filter 0.3s ease;
+    display: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    z-index: 1000;
+    background-color: rgba(255, 255, 255, 0.1);
+    transition: backdrop-filter 0.3s ease;
 }
 
 .resize-overlay.active {
-  display: block;
+    display: block;
 }
 
 .nav-button {
-  position: fixed;
-  top: 50%;
-  transform: translateY(-50%);
-  z-index: 1;
-  padding: 20px;
-  background: rgba(255, 255, 255, 0.7);
-  border: none;
-  cursor: pointer;
-  font-size: 24px;
-  color: #333;
-  transition: background 0.3s;
-  height: 100px;
-  display: flex;
-  align-items: center;
+    position: fixed;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 1;
+    padding: 10px;
+    background: var(--reader-bg-color);
+    border: none;
+    cursor: pointer;
+    font-size: 24px;
+    color: var(--reader-text-color);
+    transition: background 0.3s;
+    height: 100px;
+    display: flex;
+    align-items: center;
+    outline: none;
 }
 
 .nav-button.prev {
-  left: 0;
-  border-radius: 0 5px 5px 0;
+    left: 10px;
+    border-radius: 5px;
 }
 
 .nav-button.next {
-  right: 0;
-  border-radius: 5px 0 0 5px;
+    right: 10px;
+    border-radius: 5px;
 }
 
 .nav-button:hover {
-  background: rgba(255, 255, 255, 0.9);
+    /* background: rgba(255, 255, 255, 0.9); */
+    background: rgba(0, 0, 0, 0.1);
+    border: none;
+}
+
+.nav-button:focus {
+    outline: none;
+    border: none;
+}
+
+.nav-button:active {
+    outline: none;
+    border: none;
 }
 
 .page-info {
-  position: fixed;
-  bottom: 10px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: rgba(0, 0, 0, 0.6);
-  padding: 4px 12px;
-  border-radius: 12px;
-  font-size: 12px;
-  color: #fff;
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
-  z-index: 100;
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    /* background: var(--reader-bg-color); */
+    padding: 8px 20px;
+    /* border-radius: 20px; */
+    font-size: 12px;
+    color: var(--reader-text-color);
+    /* box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08); */
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    /* border: 1px solid rgba(0, 0, 0, 0.06); */
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    opacity: 0.85;
+    transition: opacity 0.3s ease;
+}
+
+.page-info:hover {
+    opacity: 1;
 }
 
 .toolbar {
@@ -97,7 +127,7 @@
     left: 0;
     right: 0;
     padding: 10px 20px;
-    background: rgba(255, 255, 255, 0.8);
+    background: var(--reader-bg-color);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     z-index: 1000;
@@ -105,6 +135,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    color: var(--reader-text-color);
 }
 
 .toolbar-left {
@@ -119,7 +150,7 @@
     text-align: center;
     font-size: 16px;
     font-weight: 500;
-    color: #333;
+    color: var(--reader-text-color);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -140,7 +171,7 @@
 
 .font-size-value {
     font-size: 14px;
-    color: #666;
+    color: var(--reader-text-color);
     min-width: 46px;
     text-align: center;
 }
@@ -151,7 +182,7 @@
     border: none;
     padding: 8px;
     cursor: pointer;
-    color: inherit;
+    color: var(--reader-text-color);
     display: flex;
     align-items: center;
     gap: 4px;
@@ -241,7 +272,7 @@
     top: 70px;
     width: 300px;
     max-height: calc(100vh - 170px);
-    background: rgba(255, 255, 255, 0.95);
+    background: var(--reader-bg-color);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
@@ -255,6 +286,7 @@
     overflow-y: auto;
     scrollbar-width: thin;
     scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
+    color: var(--reader-text-color);
 }
 
 .toc-panel.active {
@@ -271,10 +303,11 @@
     justify-content: space-between;
     align-items: center;
     border-radius: 4px;
+    color: var(--reader-text-color);
 }
 
 .toc-item:hover {
-    background-color: rgba(0, 0, 0, 0.05);
+    background-color: rgba(128, 128, 128, 0.1);
 }
 
 .toc-label {
@@ -340,4 +373,10 @@
     100% {
         transform: rotate(45deg) translateX(100%);
     }
+}
+
+/* 如果有设置面板，也需要更新其样式 */
+.reader-settings {
+    background-color: var(--reader-bg-color);
+    color: var(--reader-text-color);
 }

@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import ePub from 'epubjs'
 import './Reader.css'
-import { LeftOutlined, UnorderedListOutlined, FontSizeOutlined, CodeSandboxCircleFilled } from '@ant-design/icons'
+import { LeftOutlined, UnorderedListOutlined, FontSizeOutlined, CodeSandboxCircleFilled, MenuOutlined } from '@ant-design/icons'
 import { THEMES, DEFAULT_THEME } from '../config/themes'
 import ReaderSettings from './ReaderSettings'
 
@@ -92,10 +92,16 @@ function Reader() {
         document.documentElement.style.filter = 'brightness(1)';
     }, []);
 
-    // 初始化时设置默认样式
+    // 修改初始化样式的 useEffect
     useEffect(() => {
+        // 更新整个阅读器界面的颜色
+        document.documentElement.style.setProperty('--reader-bg-color', currentTheme.backgroundColor);
+        document.documentElement.style.setProperty('--reader-text-color', currentTheme.textColor);
+        // 添加设置面板的背景色变量
+        document.documentElement.style.setProperty('--settings-bg-color', currentTheme.backgroundColor);
+
         if (rendition) {
-            // 设置默认样式
+            // 设置 EPUB 内容的样式
             rendition.hooks.content.register(contents => {
                 const styles = `
                     body {
@@ -115,13 +121,11 @@ function Reader() {
                     }
                 });
                 
-                // 添加样式标签
                 const style = contents.doc.createElement('style');
                 style.innerHTML = styles;
                 contents.doc.head.appendChild(style);
             });
 
-            // 设置渲染配置
             rendition.themes.default({
                 body: {
                     background: `${currentTheme.backgroundColor} !important`,
@@ -163,13 +167,12 @@ function Reader() {
                 'Access-Control-Allow-Origin': '*'
             }
         })
-        // const bookInstance = ePub(`/books/${bookId}`)
         setBook(bookInstance)
 
-        // 获取目录
+        // 获取目录 - 移除等待位置信息生成
         bookInstance.loaded.navigation.then(nav => {
-            console.log(nav)
-            setToc(nav.toc)
+            console.log(nav);
+            setToc(nav.toc);
         })
 
         // 检测书籍的排版方向
@@ -276,7 +279,6 @@ function Reader() {
                     onClick={() => handleTocItemClick(item.href)}
                 >
                     <span className="toc-label">{item.label}</span>
-                    <span className="toc-page">{item.page || '-'}</span>
                 </div>
                 {item.subitems && item.subitems.length > 0 && (
                     <div className="toc-subitems">
@@ -286,6 +288,26 @@ function Reader() {
             </div>
         ))
     }
+
+    // 添加点击处理函数
+    const handleOutsideClick = (e) => {
+        // 如果目录面板是打开的，且点击的不是目录面板内部和目录按钮
+        console.log(e.target);
+        if (showToc && 
+            !e.target.closest('.toc-panel') && 
+            !e.target.closest('[data-button="toc"]')) {
+            setShowToc(false);
+        }
+    };
+
+    // 在组件挂载时添加点击事件监听
+    useEffect(() => {
+        window.addEventListener('click', handleOutsideClick);
+        return () => {
+            window.removeEventListener('click', handleOutsideClick);
+        };
+        
+    }, [rendition, showToc]);
 
     return (
         <div className="reader">
@@ -300,8 +322,9 @@ function Reader() {
                     <button 
                         className="toolbar-button"
                         onClick={() => setShowToc(!showToc)}
+                        data-button="toc"
                     >
-                        <UnorderedListOutlined />
+                        <MenuOutlined />
                     </button>
                 </div>
                 <div className="toolbar-title">

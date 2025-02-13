@@ -1,42 +1,228 @@
-.book-list {
-  padding: 2rem;
+.book-list-container {
+  min-height: 100vh;
+  background: #ffffff;
+  padding: 2rem 4rem;
 }
 
-.books-grid {
+.book-list-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(255, 255, 255, 0.98);
+  backdrop-filter: blur(10px);
+  padding: 1rem 0;
+  margin-bottom: 3rem;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.header-content {
+  max-width: 1400px;
+  margin: 0 auto;
   display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  gap: 20px;
-  padding: 20px;
+  justify-content: space-between;
+  align-items: center;
+  gap: 2rem;
+  padding: 0 1rem;
+}
+
+.book-list-header h1 {
+  font-size: 2rem;
+  font-weight: 500;
+  color: #000000;
+  margin: 0;
+}
+
+.content-wrapper {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.search-section {
+  margin-bottom: 2rem;
+  width: 500px;
+}
+
+.search-wrapper {
+  width: 100%;
+  position: relative;
+  display: inline-flex;
+}
+
+.search-wrapper input {
+  width: 100%;
+  padding: 0.8rem 2.5rem 0.8rem 1.5rem;
+  border: 1px solid #e5e5e5;
+  border-radius: 6px;
+  background: #fafafa;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+  text-align: left;
+}
+
+.search-wrapper input:focus {
+  outline: none;
+  border-color: #000000;
+  background: #ffffff;
+}
+
+.search-icon {
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #666666;
+  pointer-events: none;
+}
+
+.books-masonry {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 2rem;
 }
 
 .book-item {
-  flex: 0 0 auto;
-  width: 150px;  /* 设置固定宽度 */
-  cursor: pointer;
-  transition: transform 0.2s;
+  background: #ffffff;
+  border-radius: 8px;
+  overflow: hidden;
+  transition: all 0.2s ease;
 }
 
 .book-item:hover {
-  transform: scale(1.05);
+  transform: translateY(-4px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.04);
+}
+
+.book-cover-wrapper {
+  position: relative;
+  padding-top: 140%;
+  overflow: hidden;
+}
+
+.book-cover {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .book-cover-placeholder {
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
-  height: 200px;
-  background-color: #f0f0f0;
+  height: 100%;
+  background: #f5f5f5;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 10px;
+}
+
+.book-cover-placeholder span {
+  font-size: 1.5rem;
+  color: #666;
+}
+
+.book-hover-info {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.95);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.book-item:hover .book-hover-info {
+  opacity: 1;
+}
+
+.read-now-btn {
+  padding: 0.8rem 1.5rem;
+  background: #000000;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.read-now-btn:hover {
+  background: #333333;
+}
+
+.book-details {
+  padding: 1rem;
 }
 
 .book-title {
-  text-align: center;
-  font-size: 14px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: #000000;
+  line-height: 1.4;
+}
+
+.book-author {
+  margin: 0.3rem 0 0;
+  font-size: 0.85rem;
+  color: #666666;
+}
+
+.loading-spinner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 50vh;
+}
+
+.spinner {
+  width: 30px;
+  height: 30px;
+  border: 2px solid #f0f0f0;
+  border-top: 2px solid #000000;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@media (max-width: 768px) {
+  .book-list-container {
+    padding: 1rem;
+  }
+  
+  .content-wrapper {
+    padding: 0 0.5rem;
+  }
+  
+  .search-section {
+    width: calc(100% - 2rem);
+    max-width: 500px;
+  }
+  
+  .header-content {
+    padding: 0 0.5rem;
+  }
+  
+  .book-list-header h1 {
+    text-align: center;
+  }
+  
+  .books-masonry {
+    padding: 0 1rem;
+  }
 } 
